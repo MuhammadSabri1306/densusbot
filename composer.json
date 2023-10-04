@@ -1,0 +1,9 @@
+{
+    "name": "telkomid/densusbot",
+    "description": "A Telegram Bot for Densus App",
+    "type": "project",
+    "require": {
+        "php": ">=7.3",
+        "longman/telegram-bot": "*"
+    }
+}
