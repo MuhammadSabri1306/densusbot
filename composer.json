@@ -4,6 +4,8 @@
     "type": "project",
     "require": {
         "php": ">=7.3",
-        "longman/telegram-bot": "*"
+        "longman/telegram-bot": "*",
+        "vlucas/phpdotenv": "^5.5",
+        "sergeytsalkov/meekrodb": "^2.5"
     }
 }
