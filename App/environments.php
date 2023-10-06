@@ -13,6 +13,7 @@ try {
     $dotenv->required('BOT_TOKEN');
     $dotenv->required('BOT_USERNAME');
     $dotenv->required('BOT_HOOK_URL');
+    $dotenv->required('BOT_PRIVATE_KEY');
     $dotenv->required('BOT_COMMANDS_PATH');
     
     $dotenv->required('BOT_USE_MYSQL')->isBoolean();

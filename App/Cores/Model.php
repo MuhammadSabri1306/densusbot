@@ -5,14 +5,13 @@ class Model
 {
     public static $table;
 
-    protected static $relations;
+    public static $callRelations;
+    public static $callerRelations;
 
     public static function query(callable $callback)
     {
         if (is_callable($callback)) {
 
-            // $backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
-            // $modelClass = $backtrace[1]['class'];
             $modelClass = get_called_class();
 
             $db = new DB();
@@ -49,9 +48,50 @@ class Model
         }
     }
 
-    public static function with(...$modelNames)
+    public static function with(callable $callRelations)
     {
-        $modelClass = get_called_class() ?? 'Model';
-    	$modelClass::$relations = $relations;
+        static::$callRelations = $callRelations;
+        static::$callerRelations = static::class;
+    }
+
+    protected static function castRow($row)
+    {
+        if(!is_array($row)) return null;
+        if(static::class != static::$callerRelations || !static::$callRelations) return $row;
+        $formatRow = static::$callRelations;
+        return $formatRow($row);
+    }
+
+    protected static function castRows($data)
+    {
+        foreach($data as &$row) {
+            $row = static::castRow($row);
+        }
+        return $row;
+    }
+
+    public static function find($id)
+    {
+        $row = static::query(function ($db, $table) use ($id) {
+            return $db->queryFirstRow("SELECT * FROM $table WHERE id=%i", $id);
+        });
+        return $row;
+    }
+
+    public static function getAll()
+    {
+        $rows = static::query(function ($db, $table) {
+            return $db->query("SELECT * FROM $table");
+        });
+        return $rows;
+    }
+
+    public static function create(array $data)
+    {
+        return static::query(function ($db, $table) use ($data) {
+            $db->insert($table, $data);
+            $id = $db->insertId();
+            return $id ? static::find($id) : null;
+        });
     }
 }

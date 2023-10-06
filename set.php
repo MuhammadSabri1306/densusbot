@@ -1,21 +1,21 @@
 <?php
 require __DIR__ . '/bootstrap.php';
-
-$botToken = env('BOT_TOKEN', '');
-$botUsername = env('BOT_USERNAME', '');
-$hookUrl = env('BOT_HOOK_URL', '');
+require __DIR__ . '/botconfig.php';
+$config = getBotConfig();
 
 try {
-    // Create Telegram API object
-    $telegram = new Longman\TelegramBot\Telegram($botToken, $botUsername);
 
-    // Set webhook
-    $result = $telegram->setWebhook($hookUrl);
+    $telegram = new Longman\TelegramBot\Telegram($config['api_key'], $config['bot_username']);
+    $result = $telegram->setWebhook($config['webhook']['url']);
+
     if($result->isOk()) {
         dd_json($result);
     }
+
 } catch (Longman\TelegramBot\Exception\TelegramException $err) {
-    // log telegram errors
+    echo $err->getMessage();
+    dd($err);
+} catch (\Exception $err) {
     echo $err->getMessage();
     dd($err);
 }

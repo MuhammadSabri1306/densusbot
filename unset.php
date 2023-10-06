@@ -1,14 +1,12 @@
 <?php
 require __DIR__ . '/bootstrap.php';
-
-$botToken = env('BOT_TOKEN', '');
-$botUsername = env('BOT_USERNAME', '');
+require __DIR__ . '/botconfig.php';
+$config = getBotConfig();
 
 try {
-    // Create Telegram API object
-    $telegram = new Longman\TelegramBot\Telegram($botToken, $botUsername);
 
-    // Unset / delete the webhook
+    $telegram = new Longman\TelegramBot\Telegram($config['api_key'], $config['bot_username']);
+
     $result = $telegram->deleteWebhook();
     if($result->isOk()) {
         dd_json($result);

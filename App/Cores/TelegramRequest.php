@@ -3,6 +3,7 @@ namespace App\Cores;
 
 use Longman\TelegramBot\Entities\ServerResponse;
 use App\Cores\TelegramParams;
+use App\Cores\MySqlErrorLog;
 
 abstract class TelegramRequest
 {
@@ -33,4 +34,16 @@ abstract class TelegramRequest
     }
 
     abstract public function send(): ServerResponse;
+
+    public function catchFailed(ServerResponse $response)
+    {
+        if($response->isOk()) {
+            return $response;
+        }
+
+        $log = new MySqlErrorLog('telegram-request', $response);
+        $log->message = $response->getDescription() ?? 'Failed to send Telegram Request';
+        $log->record();
+        return $response;
+    }
 }

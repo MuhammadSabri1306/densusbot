@@ -2,6 +2,5 @@
 RewriteEngine on
 # RewriteBase /densus_bot
 RewriteRule ^(.*).env - [R=410]
-RewriteRule ^(.*)Commands/ - [R=410]
 RewriteRule ^(.*)CustomCommands/ - [R=410]
 RewriteRule ^(.*)App$ App/index.php/$1 [L]
