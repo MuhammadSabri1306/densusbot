@@ -10,8 +10,9 @@ try {
 
 } catch(\Error $err) {
 
-    $log->catch($err);
-    $log->message = $err->getMessage();
+    $log->catchBasicError($err);
     $log->record();
+    dd($log);
+    // dd($err->getTrace(), $err);
 
 }

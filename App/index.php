@@ -3,43 +3,11 @@ error_reporting(E_ALL);
 
 require __DIR__.'/../bootstrap.php';
 
-if(isset($_GET['test'])) {
-    $testFilePath = __DIR__.'/Tests/'.$_GET['test'].'.php';
-    if(file_exists($testFilePath)) {
-        require $testFilePath;
-    } else {
-        dd($testFilePath);
-    }
+if(isset($_GET['page'])) {
+    $page = $_GET['page'];
+    require __DIR__."/Views/$page.php";
     exit();
 }
-
-function listFolderFiles($dir){
-    $ffs = scandir($dir);
-
-    unset($ffs[array_search('.', $ffs, true)]);
-    unset($ffs[array_search('..', $ffs, true)]);
-
-    if(count($ffs) < 1)
-        return;
-
-    $trees = [];
-    foreach($ffs as $ff){
-        array_push($trees, $ff);
-        if(is_dir($dir.'/'.$ff)) $trees = [...$trees, listFolderFiles($dir.'/'.$ff)];
-    }
-    return $trees;
-}
-
-function getTestUrl($filepath) {
-    $appMode = env('APP_MODE');
-    $baseUrl = env('PUBLIC_URL', 'http://localhost/densus_bot');
-    $baseDevUrl = env('DEV_PUBLIC_URL', 'http://localhost/densus_bot');
-    $fileName = str_replace('.php', '', $filepath);
-    
-    return $appMode == 'production' ? "$baseUrl/App/?test=$fileName" : "$baseDevUrl/App/?test=$fileName";
-}
-
-$pathTree = listFolderFiles(__DIR__.'/Tests');
 
 ?><head>
     <style>
@@ -61,29 +29,29 @@ $pathTree = listFolderFiles(__DIR__.'/Tests');
     </style>
 </head>
 <body class="path-tree">
-    <h2>Tests List</h2>
+    <h2>App</h2>
     <div>
         <table>
             <thead>
                 <tr>
                     <th style="width:1px">No.</th>
-                    <th>Test Item</th>
+                    <th>Item</th>
                 </tr>
             </thead>
-            <tbody><?php
-
-foreach($pathTree as $index => $path):
-
-                ?><tr>
-                    <td><?=($index + 1)?></td>
+            <tbody>
+                <tr>
+                    <td>1</td>
                     <td>
-                        <a href="<?=getTestUrl($path)?>"><?=$path?></a>
+                        <a href="<?=publicUrl('/App/?page=test')?>"><?=publicUrl('/App/?page=test')?></a>
                     </td>
-                </tr><?php
-
-endforeach;
-
-            ?></tbody>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>
+                        <a href="<?=publicUrl('/App/?page=error-log')?>"><?=publicUrl('/App/?page=error-log')?></a>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </body>

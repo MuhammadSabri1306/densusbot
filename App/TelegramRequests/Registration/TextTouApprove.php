@@ -6,7 +6,7 @@ use Longman\TelegramBot\Entities\ServerResponse;
 use App\Cores\TelegramRequest;
 use App\Cores\TelegramText;
 
-class TextStatus extends TelegramRequest
+class TextTouApprove extends TelegramRequest
 {
     public function __construct()
     {
@@ -17,7 +17,7 @@ class TextStatus extends TelegramRequest
 
     public function text()
     {
-        return TelegramText::create('Anda telah terdaftar.');
+        return TelegramText::create('Registrasi dilanjutkan, terima kasih.');
     }
 
     public function send(): ServerResponse

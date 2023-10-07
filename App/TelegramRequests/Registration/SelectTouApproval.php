@@ -13,21 +13,21 @@ class SelectTouApproval extends TelegramRequest
     {
         parent::__construct();
         $this->params->parseMode = 'markdown';
-        $this->params->text = $this->getText()->get();
+        $this->params->text = $this->text()->get();
     }
 
-    public function getText()
+    public function text()
     {
         return TelegramText::create('Dengan memilih ')
             ->addBold('Setuju')
-            ->addText(', anda akan menerima Alert kWh.');
+            ->addText(' anda akan menerima Alert.');
     }
 
     public function setInKeyboard(callable $callButton)
     {
         $inKeyboardItem = $callButton([
             'approve' => ['text' => '👍 Setuju', 'callback_data' => null],
-            'reject' => ['text' => '❌ Tidak', 'callback_data' => null]
+            'reject' => ['text' => '❌ Batal', 'callback_data' => null]
         ]);
 
         $inlineKeyboardData = [ $inKeyboardItem['approve'], $inKeyboardItem['reject'] ];

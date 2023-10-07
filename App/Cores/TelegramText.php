@@ -171,11 +171,16 @@ class TelegramText
         return $this;
     }
 
+    public function addUrl($url, $text)
+    {
+        return $this->addText("[$text]($url)");
+    }
+
     public function addMention($user, $text = null)
     {
         // user id
         if($text) {
-            return $this->addText("[$text](tg://user?id=$user)");
+            return $this->addUrl("tg://user?id=$user", $text);
         }
 
         // username

@@ -11,6 +11,16 @@ function env($key, $default = null) {
     return $default;
 }
 
+function publicUrl($path) {
+    $appMode = env('APP_MODE');
+    $baseProdUrl = env('PUBLIC_URL', 'http://localhost/densus_bot');
+    $baseDevUrl = env('DEV_PUBLIC_URL', 'http://localhost/densus_bot');
+    $baseUrl = $appMode == 'production' ? $baseProdUrl : $baseDevUrl;
+
+    if($path[0] == '/') $path = substr($path, 1);
+    return "$baseUrl/$path";
+}
+
 function dd(...$vars) {
     echo '<style>';
     echo 'pre { background-color: #f6f8fa; padding: 10px; }';

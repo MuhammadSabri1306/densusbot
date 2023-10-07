@@ -42,8 +42,6 @@ class StartCommand extends SystemCommand
     public function execute(): ServerResponse
     {
         // return $this->replyToChat('TEST');
-        $response = BotController::handleCommand($this, 'UserController');
-        BotController::sendDebugMessage($response);
-        return $response;
+        return BotController::handleCommand($this, 'UserController');
     }
 }

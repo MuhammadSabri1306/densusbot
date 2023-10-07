@@ -4,6 +4,8 @@ require __DIR__ . '/botconfig.php';
 $config = getBotConfig();
 
 $log = new App\Cores\MySqlErrorLog('telegram-hook');
+$useMysql = env('BOT_USE_MYSQL', false);
+$mysqlPrefix = env('BOT_MYSQL_PREFIX', null);
 
 try {
 
@@ -11,8 +13,15 @@ try {
     $telegram->enableAdmins($config['admins']);
     $telegram->addCommandsPaths($config['commands']['paths']);
     $telegram->enableLimiter($config['limiter']);
-    if(env('BOT_USE_MYSQL', false)) {
-        $telegram->enableMySql($config['mysql']);
+
+    if($useMysql) {
+        if($mysqlPrefix) {
+            $telegram->enableMySql($config['mysql'], $mysqlPrefix.'_');
+        } else {
+            $telegram->enableMySql($config['mysql']);
+        }
+    } else {
+        $telegram->useGetUpdatesWithoutDatabase();
     }
 
     $telegram->handle();
@@ -22,20 +31,17 @@ try {
     // log telegram errors
     // echo $e->getMessage();
 
-    $log->message = $err->getMessage();
-    $log->catch($err);
+    $log->catchBasicError($err);
     $log->record();
 
 } catch(\Error $err) {
 
-    $log->message = $err->getMessage();
-    $log->catch($err);
+    $log->catchBasicError($err);
     $log->record();
     
 } catch(\Exception $err) {
     
-    $log->message = $err->getMessage();
-    $log->catch($err);
+    $log->catchBasicError($err);
     $log->record();
     
 }

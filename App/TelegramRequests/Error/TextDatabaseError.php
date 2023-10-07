@@ -1,12 +1,12 @@
 <?php
-namespace App\TelegramRequests\Registration;
+namespace App\TelegramRequests\Error;
 
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Entities\ServerResponse;
 use App\Cores\TelegramRequest;
 use App\Cores\TelegramText;
 
-class TextStatus extends TelegramRequest
+class TextDatabaseError extends TelegramRequest
 {
     public function __construct()
     {
@@ -17,12 +17,13 @@ class TextStatus extends TelegramRequest
 
     public function text()
     {
-        return TelegramText::create('Anda telah terdaftar.');
+        return TelegramText::create()
+            ->addBold('Gagal Koneksi')->newLine()
+            ->addText('Terdapat masalah saat menghubungi database. Silahkan ulangi beberapa saat lagi.');
     }
 
     public function send(): ServerResponse
     {
-        $response = Request::sendMessage($this->params->build());
-        return $this->catchFailed($response);
+        return Request::sendMessage($this->params->build());
     }
 }

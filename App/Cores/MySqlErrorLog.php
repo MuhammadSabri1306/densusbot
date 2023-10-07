@@ -12,14 +12,14 @@ class MySqlErrorLog
     public $tracedData;
 
     private $db;
-    private $tableName = 'error_log';
+    private static $tableName = 'error_log';
 
     public function __construct($type = 'server', $tracedData = null)
     {
         $this->db = new DB();
         $this->exists = false;
         $this->type = $type;
-        if($tracedData) $this->catch($tracedData);
+        if($tracedData) $this->setData($tracedData);
     }
 
     public function __get($key)
@@ -41,13 +41,28 @@ class MySqlErrorLog
         $this->exists = true;
     }
 
-    public function catch($tracedData)
+    public function setData($tracedData)
     {
         if(!is_array($tracedData)) {
             $tracedData = (array) $tracedData;
         }
         $this->tracedData = $tracedData;
         $this->exists = true;
+    }
+
+    public function catchBasicError($err)
+    {
+        $this->message = $err->getMessage();
+        $traceList = $err->getTrace();
+
+        array_unshift($traceList, [
+            'file' => $err->getFile() ?? null,
+            'line' => $err->getLine() ?? null
+        ]);
+        
+        $this->tracedData = [ 'trace_list' => $traceList ];
+        $this->exists = true;
+        
     }
 
     public function get()
@@ -67,10 +82,24 @@ class MySqlErrorLog
             $data['traced_data'] = json_encode($data['traced_data']);
         }
 
-        $this->db->insert($this->tableName, $data);
+        $this->db->insert(MySqlErrorLog::$tableName, $data);
         $id = $this->db->insertId();
         if($id) {
             $this->id = $id;
         }
+    }
+
+    public static function getAllLogs($callQuery = null)
+    {
+        $tableName = MySqlErrorLog::$tableName;
+        $db = new DB();
+        
+        $rows = is_callable($callQuery) ? $callQuery($db, $tableName) : $db->query("SELECT * FROM $tableName");
+        return array_map(function($item) {
+
+            $item['traced_data'] = json_decode($item['traced_data'], true);
+            return $item;
+
+        }, $rows);
     }
 }
