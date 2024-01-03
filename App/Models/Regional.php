@@ -7,12 +7,10 @@ class Regional extends Model
 {
     public static $table = 'regional';
     
-    public static function getSnameOrdered()
+    public static function getCodeOrdered()
     {
-        $regionals = static::query(function ($db, $table) {
-            return $db->query("SELECT * FROM $table ORDER BY sname");
+        return static::query(function ($db, $table) {
+            return $db->query("SELECT * FROM $table ORDER BY code");
         });
-
-        return $regionals;
     }
 }

@@ -7,21 +7,11 @@ use App\Models\Regional;
 class Witel extends Model
 {
     public static $table = 'witel';
-    public static $usedRelations = [];
-
-    public static function getRelations()
-    {
-        return [
-            'regional' => Model::createRelation(Regional::class, 'regional_id')
-        ];
-    }
     
-    public static function getSnameOrdered()
+    public static function getCodeOrdered($regionalId)
     {
-        $regionals = Witel::query(function ($db, $table) {
-            return $db->query("SELECT * FROM $table ORDER BY sname");
+        return Witel::query(function ($db, $table) use ($regionalId) {
+            return $db->query("SELECT * FROM $table WHERE regional_id=%i ORDER BY code", $regionalId);
         });
-
-        return $regionals;
     }
 }

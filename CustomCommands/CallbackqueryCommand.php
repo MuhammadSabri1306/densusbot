@@ -34,7 +34,7 @@ class CallbackqueryCommand extends SystemCommand
     {
         $callbackQuery = $this->getCallbackQuery();
         $callbackData = $callbackQuery->getData();
-        BotController::$callback = [
+        BotController::$callback = (object) [
             'from' => $callbackQuery->getFrom(),
             'message' => $callbackQuery->getMessage()
         ];
@@ -43,8 +43,6 @@ class CallbackqueryCommand extends SystemCommand
             $callbackData,
             UserController::class
         );
-
-        BotController::sendDebugMessage($response);
         
         if($response instanceof TelegramCallbackAlert) {
             return $callbackQuery->answer($response->get());
@@ -61,3 +59,57 @@ class CallbackqueryCommand extends SystemCommand
         ]);
     }
 }
+
+/*
+
+=====> BotController::$callback->message
+{
+  "message_id": 45,
+  "from": {
+    "id": 6503513366,
+    "is_bot": true,
+    "first_name": "GEPEE",
+    "username": "densusreport_bot"
+  },
+  "chat": {
+    "id": 1931357638,
+    "first_name": "Muhammad",
+    "last_name": "Sabri",
+    "username": "Sabri_m13",
+    "type": "private"
+  },
+  "date": 1696711395,
+  "text": "Dengan memilih Setuju anda akan menerima Alert.",
+  "entities": [
+    {
+      "offset": 15,
+      "length": 6,
+      "type": "bold"
+    }
+  ],
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "👍 Setuju",
+          "callback_data": "user.onTouApprove.[t=Setuju]"
+        },
+        {
+          "text": "❌ Batal",
+          "callback_data": "user.onTouReject.[t=Batal]"
+        }
+      ]
+    ]
+  }
+}
+
+=====> BotController::$callback->from
+{
+  "id": 1931357638,
+  "is_bot": false,
+  "first_name": "Muhammad",
+  "last_name": "Sabri",
+  "username": "Sabri_m13",
+  "language_code": "en"
+}
+*/

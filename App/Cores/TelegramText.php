@@ -176,14 +176,13 @@ class TelegramText
         return $this->addText("[$text]($url)");
     }
 
-    public function addMention($user, $text = null)
+    public function addMentionByUsername($userUsername)
     {
-        // user id
-        if($text) {
-            return $this->addUrl("tg://user?id=$user", $text);
-        }
+        return $this->addUrl("https://t.me/$userUsername", "@$userUsername");
+    }
 
-        // username
-        return $this->addText("@$user");
+    public function addMentionByUserId($userId, $userName)
+    {
+        return $this->addUrl("tg://user?id=$userId", $userName);
     }
 }

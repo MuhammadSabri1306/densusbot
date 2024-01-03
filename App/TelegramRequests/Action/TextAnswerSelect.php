@@ -29,7 +29,7 @@ class TextAnswerSelect extends TelegramRequest
         $this->params->text = $this->text()->get();
     }
 
-    public function setAnswerText($questionText)
+    public function setAnswerText($answerText)
     {
         $this->setData('answer', $answerText);
         $this->params->text = $this->text()->get();

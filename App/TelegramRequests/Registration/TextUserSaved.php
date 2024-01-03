@@ -5,8 +5,9 @@ use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Entities\ServerResponse;
 use App\Cores\TelegramRequest;
 use App\Cores\TelegramText;
+use App\Cores\Collection;
 
-class TextStatus extends TelegramRequest
+class TextUserSaved extends TelegramRequest
 {
     public function __construct()
     {
@@ -18,14 +19,14 @@ class TextStatus extends TelegramRequest
     public function text()
     {
         $botUsername = env('BOT_USERNAME', null);
-        $text = TelegramText::create('Anda telah terdaftar sebagai pengguna ');
-        if($botUsername) {
-            $text->addMentionByUsername($botUsername);
-        } else {
-            $text->addBold('Densus Telegram BOT');
-        }
-        $text->addText('.');
-        return $text;
+        $botUsernameText = !$botUsername ? TelegramText::create()->addBold('Densus Telegram BOT')->get()
+            : TelegramText::create()->addMentionByUsername($botUsername)->get();
+            
+        return TelegramText::create()
+            ->addBold('Pendaftaran Berhasil')->newLine()
+            ->addText("Anda telah terdaftar sebagai pengguna $botUsernameText")
+            ->addText('. Dengan ini anda akan menerima Report Konsumsi Listrik Daily dari data ')
+            ->addBold('Densus')->addText(' setiap paginya.');
     }
 
     public function send(): ServerResponse

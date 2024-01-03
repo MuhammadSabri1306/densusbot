@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 require __DIR__ . '/bootstrap.php';
 require __DIR__ . '/botconfig.php';
 $config = getBotConfig();

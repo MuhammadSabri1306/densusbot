@@ -20,7 +20,9 @@ class SelectTouApproval extends TelegramRequest
     {
         return TelegramText::create('Dengan memilih ')
             ->addBold('Setuju')
-            ->addText(' anda akan menerima Alert.');
+            ->addText(' anda akan menerima Report Konsumsi Listrik Harian dari data ')
+            ->addBold('Densus')
+            ->addText('. Lanjutkan?');
     }
 
     public function setInKeyboard(callable $callButton)

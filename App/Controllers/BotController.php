@@ -107,7 +107,7 @@ class BotController extends Controller
             return null;
         }
 
-        $request = BotController::request('Error/TextLoggedError', $errLog->id);
+        $request = BotController::request('Error/TextLoggedError', [$errLog->id]);
         $request->params->chatId = env('DEV_TEST_CHAT_ID', '');
         $request->send();
     }
@@ -151,5 +151,16 @@ class BotController extends Controller
         }
 
         return $callbackDatas; 
+    }
+
+    protected static function conversations(): array
+    {
+        return [];
+    }
+
+    public static function getConversationName($key = null)
+    {
+        $list = static::conversations();
+        return isset($list[$key]) ? $list[$key] : $list;
     }
 }
